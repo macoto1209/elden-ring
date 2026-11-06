@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>《艾爾登法環》人物關係圖</title>
+<style>
+  body { margin:0; background:#ECE9E1; font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif; }
+  .wrap { max-width:1720px; margin:0 auto; padding:18px; }
+  svg { background:#FBFAF6; border:1px solid #D8D2C2; width:100%; height:auto; display:block; }
+  .t { font-size:20px; font-weight:700; fill:#1C1B18; }
+  .s { font-size:12.5px; fill:#6E6A61; }
+  .cap { font-size:13px; fill:#8A8474; }
+  .lab { font-size:12px; fill:#A87C2A; font-weight:700; }
+  .box { fill:#FFFFFF; stroke:#C9BFA8; stroke-width:1.4; }
+  .god { fill:#F5EDD8; stroke:#A87C2A; stroke-width:2.4; }
+  .note { fill:#F3F0E7; stroke:#D8D2C2; stroke-width:1.2; }
+  .ln { stroke:#9A927E; stroke-width:1.6; fill:none; }
+  .red { fill:#A33327; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<svg viewBox="0 0 1680 1060" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9A927E"/>
+    </marker>
+  </defs>
+
+  <text x="840" y="52" text-anchor="middle" font-size="34" font-weight="700" fill="#1C1B18">《艾爾登法環》人物關係圖</text>
+  <text x="840" y="82" text-anchor="middle" class="cap">家族、婚姻，與破碎戰爭的因果</text>
+
+  <!-- 秩序層 -->
+  <rect class="box" x="60" y="118" width="230" height="64"/>
+  <text class="t" x="175" y="146" text-anchor="middle">無上意志</text>
+  <text class="s" x="175" y="168" text-anchor="middle">外神．早已失聯</text>
+  <line class="ln" x1="290" y1="150" x2="392" y2="150" marker-end="url(#ar)"/>
+  <rect class="box" x="400" y="118" width="250" height="64"/>
+  <text class="t" x="525" y="146" text-anchor="middle">艾爾登之獸</text>
+  <text class="s" x="525" y="168" text-anchor="middle">乘流星而來．後成為法環</text>
+  <path class="ln" d="M650,150 H840 V200" marker-end="url(#ar)"/>
+  <text class="lab" x="700" y="140">棲於女王體內</text>
+
+  <!-- 中心 -->
+  <rect class="box" x="60" y="213" width="270" height="88"/>
+  <text class="t" x="195" y="250" text-anchor="middle">葛孚雷</text>
+  <text class="s" x="195" y="274" text-anchor="middle">首任艾爾登之王．後遭放逐</text>
+
+  <rect class="god" x="590" y="213" width="500" height="88"/>
+  <text x="840" y="252" text-anchor="middle" font-size="26" font-weight="700" fill="#1C1B18">瑪莉卡 ＝ 拉達岡</text>
+  <text class="s" x="840" y="278" text-anchor="middle">同一個人．女王與第二任王．法環棲於其身</text>
+
+  <rect class="box" x="1350" y="213" width="270" height="88"/>
+  <text class="t" x="1485" y="250" text-anchor="middle">蕾娜菈</text>
+  <text class="s" x="1485" y="274" text-anchor="middle">滿月女王．卡利亞王室</text>
+
+  <line class="ln" x1="330" y1="257" x2="590" y2="257"/>
+  <text class="lab" x="460" y="245" text-anchor="middle">第一段婚姻</text>
+  <line class="ln" x1="1090" y1="257" x2="1350" y2="257"/>
+  <text class="lab" x="1220" y="245" text-anchor="middle">結婚後又離開她</text>
+
+  <!-- 子代 A -->
+  <path class="ln" d="M460,257 V343 M140,343 H470 M140,343 V363 M310,343 V363 M470,343 V363"/>
+  <rect class="box" x="55" y="363" width="170" height="94"/>
+  <text class="t" x="140" y="398" text-anchor="middle">葛德溫</text>
+  <text class="s" x="140" y="420" text-anchor="middle">長子．黃金嫡系</text>
+  <text class="s red" x="140" y="440" text-anchor="middle">黑刀之夜被殺</text>
+  <rect class="box" x="245" y="363" width="170" height="94"/>
+  <text class="t" x="330" y="398" text-anchor="middle">蒙葛特</text>
+  <text class="s" x="330" y="420" text-anchor="middle">惡兆．雙胞胎</text>
+  <text class="s" x="330" y="440" text-anchor="middle">守護王城</text>
+  <rect class="box" x="435" y="363" width="170" height="94"/>
+  <text class="t" x="520" y="398" text-anchor="middle">蒙格</text>
+  <text class="s" x="520" y="420" text-anchor="middle">惡兆．雙胞胎</text>
+  <text class="s" x="520" y="440" text-anchor="middle">鮮血王朝</text>
+  <text class="cap" x="330" y="484" text-anchor="middle">瑪莉卡與葛孚雷之子．惡兆生來被囚於王城下水道</text>
+
+  <!-- 子代 C -->
+  <path class="ln" d="M840,301 V343 M740,343 H930 M740,343 V363 M930,343 V363"/>
+  <rect class="box" x="655" y="363" width="170" height="94"/>
+  <text class="t" x="740" y="398" text-anchor="middle">瑪蓮妮亞</text>
+  <text class="s" x="740" y="420" text-anchor="middle">受猩紅腐敗詛咒</text>
+  <text class="s" x="740" y="440" text-anchor="middle">女武神</text>
+  <rect class="box" x="845" y="363" width="170" height="94"/>
+  <text class="t" x="930" y="398" text-anchor="middle">米凱拉</text>
+  <text class="s" x="930" y="420" text-anchor="middle">受永遠年幼詛咒</text>
+  <text class="s" x="930" y="440" text-anchor="middle">聖樹的主人</text>
+  <text class="cap" x="840" y="484" text-anchor="middle">瑪莉卡與拉達岡（自己與自己）之雙胞胎</text>
+
+  <!-- 子代 B -->
+  <path class="ln" d="M1220,257 V343 M1160,343 H1540 M1160,343 V363 M1350,343 V363 M1540,343 V363"/>
+  <rect class="box" x="1075" y="363" width="170" height="94"/>
+  <text class="t" x="1160" y="398" text-anchor="middle">拉塔恩</text>
+  <text class="s" x="1160" y="420" text-anchor="middle">碎星將軍</text>
+  <text class="s" x="1160" y="440" text-anchor="middle">破碎戰爭名將</text>
+  <rect class="box" x="1265" y="363" width="170" height="94"/>
+  <text class="t" x="1350" y="398" text-anchor="middle">拉卡德</text>
+  <text class="s" x="1350" y="420" text-anchor="middle">火山官邸之主</text>
+  <text class="s" x="1350" y="440" text-anchor="middle">自願被大蛇吞噬</text>
+  <rect class="box" x="1455" y="363" width="170" height="94"/>
+  <text class="t" x="1540" y="398" text-anchor="middle">菈妮</text>
+  <text class="s" x="1540" y="420" text-anchor="middle">神人．月之公主</text>
+  <text class="s red" x="1540" y="440" text-anchor="middle">策劃黑刀之夜</text>
+  <text class="cap" x="1350" y="484" text-anchor="middle">拉達岡與蕾娜菈之子．蕾娜菈被離開後精神崩潰</text>
+
+  <!-- 因果鏈 -->
+  <text x="60" y="540" font-size="16" font-weight="700" fill="#A87C2A">因果鏈</text>
+  <rect class="box" x="40" y="556" width="300" height="96"/>
+  <text class="t" x="190" y="592" text-anchor="middle">黑刀之夜</text>
+  <text class="s" x="190" y="614" text-anchor="middle">菈妮策劃．黑刀刺客</text>
+  <text class="s" x="190" y="632" text-anchor="middle">持命定之死碎片行兇</text>
+  <rect class="box" x="370" y="556" width="300" height="96"/>
+  <text class="t" x="520" y="592" text-anchor="middle">葛德溫之死</text>
+  <text class="s" x="520" y="614" text-anchor="middle">靈魂死而肉體不死</text>
+  <text class="s" x="520" y="632" text-anchor="middle">成為死王子的源頭</text>
+  <rect class="box" x="700" y="556" width="300" height="96"/>
+  <text class="t" x="850" y="592" text-anchor="middle">法環破碎</text>
+  <text class="s" x="850" y="614" text-anchor="middle">瑪莉卡親手敲碎</text>
+  <text class="s" x="850" y="632" text-anchor="middle">拉達岡修補失敗</text>
+  <rect class="box" x="1030" y="556" width="300" height="96"/>
+  <text class="t" x="1180" y="592" text-anchor="middle">破碎戰爭</text>
+  <text class="s" x="1180" y="614" text-anchor="middle">半神搶奪大盧恩</text>
+  <text class="s" x="1180" y="632" text-anchor="middle">沒有人勝出</text>
+  <rect class="box" x="1360" y="556" width="300" height="96"/>
+  <text class="t" x="1510" y="592" text-anchor="middle">褪色者召回</text>
+  <text class="s" x="1510" y="614" text-anchor="middle">恩惠指引放逐者</text>
+  <text class="s" x="1510" y="632" text-anchor="middle">回到交界地</text>
+  <line class="ln" x1="340" y1="604" x2="362" y2="604" marker-end="url(#ar)"/>
+  <line class="ln" x1="670" y1="604" x2="692" y2="604" marker-end="url(#ar)"/>
+  <line class="ln" x1="1000" y1="604" x2="1022" y2="604" marker-end="url(#ar)"/>
+  <line class="ln" x1="1330" y1="604" x2="1352" y2="604" marker-end="url(#ar)"/>
+
+  <!-- 旅程 -->
+  <text x="60" y="706" font-size="16" font-weight="700" fill="#A87C2A">褪色者的旅程（主線）</text>
+  <rect class="box" x="40" y="722" width="300" height="96"/>
+  <text class="t" x="190" y="758" text-anchor="middle">梅琳娜引路</text>
+  <text class="s" x="190" y="780" text-anchor="middle">賜福旁的少女</text>
+  <text class="s" x="190" y="798" text-anchor="middle">與褪色者立約</text>
+  <rect class="box" x="370" y="722" width="300" height="96"/>
+  <text class="t" x="520" y="758" text-anchor="middle">收集大盧恩</text>
+  <text class="s" x="520" y="780" text-anchor="middle">打倒碎片君王</text>
+  <text class="s" x="520" y="798" text-anchor="middle">進入王城</text>
+  <rect class="box" x="700" y="722" width="300" height="96"/>
+  <text class="t" x="850" y="758" text-anchor="middle">燒掉黃金樹</text>
+  <text class="s" x="850" y="780" text-anchor="middle">樹門荊棘拒人進入</text>
+  <text class="s" x="850" y="798" text-anchor="middle">梅琳娜自焚引火</text>
+  <rect class="box" x="1030" y="722" width="300" height="96"/>
+  <text class="t" x="1180" y="758" text-anchor="middle">取回命定之死</text>
+  <text class="s" x="1180" y="780" text-anchor="middle">法姆亞茲拉</text>
+  <text class="s" x="1180" y="798" text-anchor="middle">殺黑劍瑪利喀斯</text>
+  <rect class="box" x="1360" y="722" width="300" height="96"/>
+  <text class="t" x="1510" y="758" text-anchor="middle">王座決戰</text>
+  <text class="s" x="1510" y="780" text-anchor="middle">拉達岡與艾爾登之獸</text>
+  <text class="s" x="1510" y="798" text-anchor="middle">修復法環．新王誕生</text>
+  <line class="ln" x1="340" y1="770" x2="362" y2="770" marker-end="url(#ar)"/>
+  <line class="ln" x1="670" y1="770" x2="692" y2="770" marker-end="url(#ar)"/>
+  <line class="ln" x1="1000" y1="770" x2="1022" y2="770" marker-end="url(#ar)"/>
+  <line class="ln" x1="1330" y1="770" x2="1352" y2="770" marker-end="url(#ar)"/>
+
+  <!-- 註記 -->
+  <rect class="note" x="40" y="856" width="520" height="86"/>
+  <text class="t" x="66" y="890">命定之死</text>
+  <text class="s" x="66" y="912">本是法環的一部分．瑪莉卡將它摘出，交瑪利喀斯保管</text>
+  <text class="s" x="66" y="930">被偷走的碎片，造出了黑刀</text>
+  <rect class="note" x="580" y="856" width="520" height="86"/>
+  <text class="t" x="606" y="890">食糞者</text>
+  <text class="s" x="606" y="912">囚於王城下水道牢籠．以詛咒汙染死者</text>
+  <text class="s" x="606" y="930">他的修復符文通向詛咒結局</text>
+  <rect class="note" x="1120" y="856" width="520" height="86"/>
+  <text class="t" x="1146" y="890">星星時代（菈妮結局）</text>
+  <text class="s" x="1146" y="912">不修法環．菈妮把秩序帶離這個世界</text>
+  <text class="s" x="1146" y="930">褪色者隨她離開．秩序不再干涉地面</text>
+
+  <text class="cap" x="60" y="1015">金框：神與法環　實線：血緣與婚姻　紅字：謀殺與策劃</text>
+  <text class="cap" x="1620" y="1015" text-anchor="end">依遊戲本篇設定整理．推論部分未列入</text>
+</svg>
+</div>
+</body>
+</html>
