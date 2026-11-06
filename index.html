@@ -18,9 +18,11 @@
   .note { fill:#F3F0E7; stroke:#D8D2C2; stroke-width:1.2; }
   .ln { stroke:#9A927E; stroke-width:1.6; fill:none; }
   .red { fill:#A33327; }
-  .person { cursor:pointer; transition: transform .25s ease; transform-box: fill-box; transform-origin: center; }
+  .person { cursor:pointer; transition: transform .25s ease, opacity .25s ease; transform-box: fill-box; transform-origin: center; }
   .person:hover rect { stroke:#A87C2A; }
-  .person.rel { transform: scale(1.12); }
+  .person.rel { transform: scale(1.18); }
+  .person.rel rect { stroke:#A87C2A; stroke-width:2.6; fill:#FBF3DC; }
+  .person.dim { opacity:.6; }
   .person.sel rect { stroke:#A33327; stroke-width:3; }
   .stage { display:flex; gap:16px; align-items:flex-start; }
   .chartwrap { flex:1; min-width:0; }
@@ -456,16 +458,17 @@ const card = document.getElementById('card');
 function el(id){ return document.getElementById(id); }
 function groups(pid){ return document.querySelectorAll('[data-pid="' + pid + '"]'); }
 function reset(){
-  document.querySelectorAll('.person').forEach(g=>g.classList.remove('rel','sel'));
+  document.querySelectorAll('.person').forEach(g=>g.classList.remove('rel','sel','dim'));
   card.classList.remove('show','mini'); card.setAttribute('aria-hidden','true');
   el('cardToggle').textContent = '收合';
 }
 function select(pid){
   const info = INFO[pid]; if(!info) return;
-  document.querySelectorAll('.person').forEach(g=>g.classList.remove('rel','sel'));
+  document.querySelectorAll('.person').forEach(g=>g.classList.remove('rel','sel','dim'));
   card.classList.remove('mini'); el('cardToggle').textContent = '收合';
   groups(pid).forEach(g=>{ g.classList.add('sel'); g.parentNode.appendChild(g); });
   info.rel.forEach(r=>{ groups(r).forEach(g=>{ g.classList.add('rel'); g.parentNode.appendChild(g); }); });
+  document.querySelectorAll('.person:not(.sel):not(.rel)').forEach(g=>g.classList.add('dim'));
   el('cardName').textContent = info.name;
   el('cardEn').textContent = info.en;
   el('cardBranch').textContent = info.branch;
