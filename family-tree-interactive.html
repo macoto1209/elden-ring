@@ -2,7 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>《艾爾登法環》人物關係圖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>艾爾登法環人物關係圖（互動版）</title>
 <style>
   body { margin:0; background:#ECE9E1; font-family:"PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif; }
   .wrap { max-width:1720px; margin:0 auto; padding:18px; }
@@ -16,16 +17,24 @@
   .note { fill:#F3F0E7; stroke:#D8D2C2; stroke-width:1.2; }
   .ln { stroke:#9A927E; stroke-width:1.6; fill:none; }
   .red { fill:#A33327; }
-
   .person { cursor:pointer; transition: transform .25s ease; transform-box: fill-box; transform-origin: center; }
   .person:hover rect { stroke:#A87C2A; }
   .person.rel { transform: scale(1.12); }
   .person.sel rect { stroke:#A33327; stroke-width:3; }
-  .hint { color:#6E6A61; font-size:13.5px; margin:0 2px 10px; }
-  #card { position:fixed; right:18px; top:84px; width:302px; max-width:calc(100vw - 24px); background:#FFFFFF; border:1.5px solid #C9BFA8; border-radius:12px; box-shadow:0 10px 32px rgba(28,27,24,.22); padding:16px 18px 14px; opacity:0; transform:translateY(8px); pointer-events:none; transition:opacity .2s ease, transform .2s ease; z-index:20; }
-  #card.show { opacity:1; transform:translateY(0); pointer-events:auto; }
+  .hint { color:#6E6A61; font-size:13.5px; margin:0 2px 10px; line-height:1.6; }
+  .stage { display:flex; gap:16px; align-items:flex-start; }
+  .chartwrap { flex:1; min-width:0; }
+  #layoutNarrow { display:none; }
+  #svgNarrow .t { font-size:22px; }
+  #svgNarrow .s { font-size:14.5px; }
+  #svgNarrow .cap { font-size:14px; }
+  #svgNarrow .lab { font-size:13.5px; }
+  #card { position:sticky; top:16px; width:300px; flex:none; display:none; background:#FFFFFF; border:1.5px solid #C9BFA8; border-radius:12px; box-shadow:0 10px 32px rgba(28,27,24,.16); padding:16px 18px 14px; }
+  #card.show { display:block; }
   #cardClose { position:absolute; right:10px; top:8px; border:none; background:none; font-size:15px; color:#8A8474; cursor:pointer; padding:4px 6px; }
-  #cardName { font-size:19px; font-weight:700; color:#1C1B18; }
+  #cardToggle { display:none; position:absolute; right:42px; top:8px; border:1px solid #D8D2C2; background:#F3F0E7; border-radius:12px; font-size:12px; color:#6E6A61; cursor:pointer; padding:3px 10px; font-family:inherit; }
+  #cardHead { position:relative; }
+  #cardName { font-size:19px; font-weight:700; color:#1C1B18; padding-right:64px; }
   #cardEn { font-size:12.5px; color:#A87C2A; font-weight:700; margin-top:1px; }
   #cardBranch { display:inline-block; font-size:12px; color:#6E6A61; background:#F3F0E7; border:1px solid #D8D2C2; border-radius:20px; padding:2px 10px; margin:8px 0 9px; }
   #cardText { font-size:13.5px; line-height:1.75; color:#3A382F; margin:0 0 10px; }
@@ -33,30 +42,41 @@
   #cardRel { display:flex; flex-wrap:wrap; gap:6px; }
   #cardRel button { font-family:inherit; font-size:12.5px; color:#1C1B18; background:#F5EDD8; border:1px solid #C9BFA8; border-radius:16px; padding:3px 11px; cursor:pointer; }
   #cardRel button:hover { border-color:#A87C2A; }
-  @media (max-width: 760px) { #card { top:auto; bottom:12px; right:12px; left:12px; width:auto; } }
+  @media (max-width: 860px) {
+    #layoutWide { display:none; }
+    #layoutNarrow { display:block; }
+    .stage { display:block; }
+    #card { position:fixed; left:10px; right:10px; bottom:10px; top:auto; width:auto; max-height:46vh; overflow-y:auto; z-index:20; }
+    #cardToggle { display:inline-block; }
+    #card.mini { max-height:60px; overflow:hidden; }
+    #card.mini #cardBranch, #card.mini #cardText, #card.mini #cardRelLabel, #card.mini #cardRel { display:none; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
-<p class="hint">點任一人物方塊：旁邊會浮出他的小資訊，跟他有關的主要人物會稍微放大，點放大的人可以繼續跳過去。點圖上空白處復原。</p>
-<svg id="chart" viewBox="0 0 1680 1060" xmlns="http://www.w3.org/2000/svg">
+<p class="hint">點任一人物方塊：小資訊會出現在旁邊（手機版在下方，可收合），跟他有關的主要人物會稍微放大，點放大的人可以繼續跳過去。點圖上空白處復原。手機直式會自動換成專用排版。</p>
+<div class="stage">
+  <div class="chartwrap">
+    <div id="layoutWide">
+<svg id="svgWide" viewBox="0 0 1680 1060" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#9A927E"/>
     </marker>
   </defs>
 
-  <text x="840" y="52" text-anchor="middle" font-size="34" font-weight="700" fill="#1C1B18">《艾爾登法環》人物關係圖</text>
+  <text x="840" y="52" text-anchor="middle" font-size="34" font-weight="700" fill="#1C1B18">艾爾登法環人物關係圖</text>
   <text x="840" y="82" text-anchor="middle" class="cap">家族、婚姻，與破碎戰爭的因果</text>
 
   <!-- 秩序層 -->
-  <g class="person" id="p-greaterwill">
+  <g class="person" data-pid="greaterwill">
   <rect class="box" x="60" y="118" width="230" height="64"/>
   <text class="t" x="175" y="146" text-anchor="middle">無上意志</text>
   <text class="s" x="175" y="168" text-anchor="middle">外神．早已失聯</text>
   </g>
   <line class="ln" x1="290" y1="150" x2="392" y2="150" marker-end="url(#ar)"/>
-  <g class="person" id="p-eldenbeast">
+  <g class="person" data-pid="eldenbeast">
   <rect class="box" x="400" y="118" width="250" height="64"/>
   <text class="t" x="525" y="146" text-anchor="middle">艾爾登之獸</text>
   <text class="s" x="525" y="168" text-anchor="middle">乘流星而來．後成為法環</text>
@@ -65,19 +85,19 @@
   <text class="lab" x="700" y="140">棲於女王體內</text>
 
   <!-- 中心 -->
-  <g class="person" id="p-godfrey">
+  <g class="person" data-pid="godfrey">
   <rect class="box" x="60" y="213" width="270" height="88"/>
   <text class="t" x="195" y="250" text-anchor="middle">葛孚雷</text>
   <text class="s" x="195" y="274" text-anchor="middle">首任艾爾登之王．後遭放逐</text>
   </g>
 
-  <g class="person" id="p-marika">
+  <g class="person" data-pid="marika">
   <rect class="god" x="590" y="213" width="500" height="88"/>
   <text x="840" y="252" text-anchor="middle" font-size="26" font-weight="700" fill="#1C1B18">瑪莉卡 ＝ 拉達岡</text>
   <text class="s" x="840" y="278" text-anchor="middle">同一個人．女王與第二任王．法環棲於其身</text>
   </g>
 
-  <g class="person" id="p-rennala">
+  <g class="person" data-pid="rennala">
   <rect class="box" x="1350" y="213" width="270" height="88"/>
   <text class="t" x="1485" y="250" text-anchor="middle">蕾娜菈</text>
   <text class="s" x="1485" y="274" text-anchor="middle">滿月女王．卡利亞王室</text>
@@ -90,19 +110,19 @@
 
   <!-- 子代 A -->
   <path class="ln" d="M460,257 V343 M140,343 H470 M140,343 V363 M310,343 V363 M470,343 V363"/>
-  <g class="person" id="p-godwyn">
+  <g class="person" data-pid="godwyn">
   <rect class="box" x="55" y="363" width="170" height="94"/>
   <text class="t" x="140" y="398" text-anchor="middle">葛德溫</text>
   <text class="s" x="140" y="420" text-anchor="middle">長子．黃金嫡系</text>
   <text class="s red" x="140" y="440" text-anchor="middle">黑刀之夜被殺</text>
   </g>
-  <g class="person" id="p-morgott">
+  <g class="person" data-pid="morgott">
   <rect class="box" x="245" y="363" width="170" height="94"/>
   <text class="t" x="330" y="398" text-anchor="middle">蒙葛特</text>
   <text class="s" x="330" y="420" text-anchor="middle">惡兆．雙胞胎</text>
   <text class="s" x="330" y="440" text-anchor="middle">守護王城</text>
   </g>
-  <g class="person" id="p-mohg">
+  <g class="person" data-pid="mohg">
   <rect class="box" x="435" y="363" width="170" height="94"/>
   <text class="t" x="520" y="398" text-anchor="middle">蒙格</text>
   <text class="s" x="520" y="420" text-anchor="middle">惡兆．雙胞胎</text>
@@ -112,13 +132,13 @@
 
   <!-- 子代 C -->
   <path class="ln" d="M840,301 V343 M740,343 H930 M740,343 V363 M930,343 V363"/>
-  <g class="person" id="p-malenia">
+  <g class="person" data-pid="malenia">
   <rect class="box" x="655" y="363" width="170" height="94"/>
   <text class="t" x="740" y="398" text-anchor="middle">瑪蓮妮亞</text>
   <text class="s" x="740" y="420" text-anchor="middle">受猩紅腐敗詛咒</text>
   <text class="s" x="740" y="440" text-anchor="middle">女武神</text>
   </g>
-  <g class="person" id="p-miquella">
+  <g class="person" data-pid="miquella">
   <rect class="box" x="845" y="363" width="170" height="94"/>
   <text class="t" x="930" y="398" text-anchor="middle">米凱拉</text>
   <text class="s" x="930" y="420" text-anchor="middle">受永遠年幼詛咒</text>
@@ -128,19 +148,19 @@
 
   <!-- 子代 B -->
   <path class="ln" d="M1220,257 V343 M1160,343 H1540 M1160,343 V363 M1350,343 V363 M1540,343 V363"/>
-  <g class="person" id="p-radahn">
+  <g class="person" data-pid="radahn">
   <rect class="box" x="1075" y="363" width="170" height="94"/>
   <text class="t" x="1160" y="398" text-anchor="middle">拉塔恩</text>
   <text class="s" x="1160" y="420" text-anchor="middle">碎星將軍</text>
   <text class="s" x="1160" y="440" text-anchor="middle">破碎戰爭名將</text>
   </g>
-  <g class="person" id="p-rykard">
+  <g class="person" data-pid="rykard">
   <rect class="box" x="1265" y="363" width="170" height="94"/>
   <text class="t" x="1350" y="398" text-anchor="middle">拉卡德</text>
   <text class="s" x="1350" y="420" text-anchor="middle">火山官邸之主</text>
   <text class="s" x="1350" y="440" text-anchor="middle">自願被大蛇吞噬</text>
   </g>
-  <g class="person" id="p-ranni">
+  <g class="person" data-pid="ranni">
   <rect class="box" x="1455" y="363" width="170" height="94"/>
   <text class="t" x="1540" y="398" text-anchor="middle">菈妮</text>
   <text class="s" x="1540" y="420" text-anchor="middle">神人．月之公主</text>
@@ -177,7 +197,7 @@
 
   <!-- 旅程 -->
   <text x="60" y="706" font-size="16" font-weight="700" fill="#A87C2A">褪色者的旅程（主線）</text>
-  <g class="person" id="p-melina">
+  <g class="person" data-pid="melina">
   <rect class="box" x="40" y="722" width="300" height="96"/>
   <text class="t" x="190" y="758" text-anchor="middle">梅琳娜引路</text>
   <text class="s" x="190" y="780" text-anchor="middle">賜福旁的少女</text>
@@ -209,7 +229,7 @@
   <text class="t" x="66" y="890">命定之死</text>
   <text class="s" x="66" y="912">本是法環的一部分．瑪莉卡將它摘出，交瑪利喀斯保管</text>
   <text class="s" x="66" y="930">被偷走的碎片，造出了黑刀</text>
-  <g class="person" id="p-dung">
+  <g class="person" data-pid="dung">
   <rect class="note" x="580" y="856" width="520" height="86"/>
   <text class="t" x="606" y="890">食糞者</text>
   <text class="s" x="606" y="912">囚於王城下水道牢籠．以詛咒汙染死者</text>
@@ -223,36 +243,222 @@
   <text class="cap" x="60" y="1015">金框：神與法環　實線：血緣與婚姻　紅字：謀殺與策劃</text>
   <text class="cap" x="1620" y="1015" text-anchor="end">依遊戲本篇設定整理．推論部分未列入</text>
 </svg>
+    </div>
+    <div id="layoutNarrow">
+<svg id="svgNarrow" viewBox="0 0 720 2660" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9A927E"/></marker></defs>
+  <text x="360" y="52" text-anchor="middle" font-size="30" font-weight="700" fill="#1C1B18">艾爾登法環人物關係圖</text>
+  <text x="360" y="80" text-anchor="middle" class="cap">家族、婚姻，與破碎戰爭的因果</text>
+  <g class="person" data-pid="greaterwill">
+  <rect class="box" x="30" y="110" width="320" height="72"/>
+  <text class="t" x="190" y="144" text-anchor="middle" >無上意志</text>
+  <text class="s" x="190" y="166" text-anchor="middle">外神．早已失聯</text>
+  </g>
+  <line class="ln" x1="350" y1="146" x2="364" y2="146" marker-end="url(#ar2)"/>
+  <g class="person" data-pid="eldenbeast">
+  <rect class="box" x="376" y="110" width="320" height="72"/>
+  <text class="t" x="536" y="144" text-anchor="middle" >艾爾登之獸</text>
+  <text class="s" x="536" y="166" text-anchor="middle">乘流星而來．後成為法環</text>
+  </g>
+  <path class="ln" d="M536,182 V216 H368 V242" marker-end="url(#ar2)"/>
+  <text class="lab" x="548" y="208">棲於女王體內</text>
+  <g class="person" data-pid="marika">
+  <rect class="god" x="110" y="250" width="500" height="88"/>
+  <text class="t" x="360" y="284" text-anchor="middle" style="font-size:25px">瑪莉卡 ＝ 拉達岡</text>
+  <text class="s" x="360" y="306" text-anchor="middle">同一個人．女王與第二任王．法環棲於其身</text>
+  </g>
+  <g class="person" data-pid="godfrey">
+  <rect class="box" x="30" y="382" width="320" height="84"/>
+  <text class="t" x="190" y="416" text-anchor="middle" >葛孚雷</text>
+  <text class="s" x="190" y="438" text-anchor="middle">首任艾爾登之王．後遭放逐</text>
+  </g>
+  <g class="person" data-pid="rennala">
+  <rect class="box" x="370" y="382" width="320" height="84"/>
+  <text class="t" x="530" y="416" text-anchor="middle" >蕾娜菈</text>
+  <text class="s" x="530" y="438" text-anchor="middle">滿月女王．卡利亞王室</text>
+  </g>
+  <path class="ln" d="M262,338 V360 H190 V376" marker-end="url(#ar2)"/>
+  <text class="lab" x="226" y="352" text-anchor="middle">第一段婚姻</text>
+  <path class="ln" d="M458,338 V360 H530 V376" marker-end="url(#ar2)"/>
+  <text class="lab" x="494" y="352" text-anchor="middle">結婚後又離開她</text>
+  <text class="lab" x="30" y="512">葛孚雷一支</text>
+  <g class="person" data-pid="godwyn">
+  <rect class="box" x="20" y="524" width="213" height="94"/>
+  <text class="t" x="126" y="558" text-anchor="middle" >葛德溫</text>
+  <text class="s" x="126" y="580" text-anchor="middle">長子．黃金嫡系</text>
+  <text class="s red" x="126" y="600" text-anchor="middle">黑刀之夜被殺</text>
+  </g>
+  <g class="person" data-pid="morgott">
+  <rect class="box" x="253" y="524" width="213" height="94"/>
+  <text class="t" x="359" y="558" text-anchor="middle" >蒙葛特</text>
+  <text class="s" x="359" y="580" text-anchor="middle">惡兆．雙胞胎</text>
+  <text class="s" x="359" y="600" text-anchor="middle">守護王城</text>
+  </g>
+  <g class="person" data-pid="mohg">
+  <rect class="box" x="486" y="524" width="213" height="94"/>
+  <text class="t" x="592" y="558" text-anchor="middle" >蒙格</text>
+  <text class="s" x="592" y="580" text-anchor="middle">惡兆．雙胞胎</text>
+  <text class="s" x="592" y="600" text-anchor="middle">鮮血王朝</text>
+  </g>
+  <text class="cap" x="360" y="646" text-anchor="middle">瑪莉卡與葛孚雷之子．惡兆生來被囚於王城下水道</text>
+  <text class="lab" x="30" y="690">瑪莉卡與拉達岡一支</text>
+  <g class="person" data-pid="malenia">
+  <rect class="box" x="137" y="702" width="213" height="94"/>
+  <text class="t" x="243" y="736" text-anchor="middle" >瑪蓮妮亞</text>
+  <text class="s" x="243" y="758" text-anchor="middle">受猩紅腐敗詛咒</text>
+  <text class="s" x="243" y="778" text-anchor="middle">女武神</text>
+  </g>
+  <g class="person" data-pid="miquella">
+  <rect class="box" x="370" y="702" width="213" height="94"/>
+  <text class="t" x="476" y="736" text-anchor="middle" >米凱拉</text>
+  <text class="s" x="476" y="758" text-anchor="middle">受永遠年幼詛咒</text>
+  <text class="s" x="476" y="778" text-anchor="middle">聖樹的主人</text>
+  </g>
+  <text class="cap" x="360" y="824" text-anchor="middle">瑪莉卡與拉達岡（自己與自己）之雙胞胎</text>
+  <text class="lab" x="30" y="868">蕾娜菈一支</text>
+  <g class="person" data-pid="radahn">
+  <rect class="box" x="20" y="880" width="213" height="94"/>
+  <text class="t" x="126" y="914" text-anchor="middle" >拉塔恩</text>
+  <text class="s" x="126" y="936" text-anchor="middle">碎星將軍</text>
+  <text class="s" x="126" y="956" text-anchor="middle">破碎戰爭名將</text>
+  </g>
+  <g class="person" data-pid="rykard">
+  <rect class="box" x="253" y="880" width="213" height="94"/>
+  <text class="t" x="359" y="914" text-anchor="middle" >拉卡德</text>
+  <text class="s" x="359" y="936" text-anchor="middle">火山官邸之主</text>
+  <text class="s" x="359" y="956" text-anchor="middle">自願被大蛇吞噬</text>
+  </g>
+  <g class="person" data-pid="ranni">
+  <rect class="box" x="486" y="880" width="213" height="94"/>
+  <text class="t" x="592" y="914" text-anchor="middle" >菈妮</text>
+  <text class="s" x="592" y="936" text-anchor="middle">神人．月之公主</text>
+  <text class="s red" x="592" y="956" text-anchor="middle">策劃黑刀之夜</text>
+  </g>
+  <text class="cap" x="360" y="1002" text-anchor="middle">拉達岡與蕾娜菈之子．蕾娜菈被離開後精神崩潰</text>
+  <text x="30" y="1064" font-size="16" font-weight="700" fill="#A87C2A">因果鏈</text>
+  <g>
+  <rect class="box" x="60" y="1080" width="600" height="88"/>
+  <text class="t" x="360" y="1114" text-anchor="middle">黑刀之夜</text>
+  <text class="s" x="360" y="1137" text-anchor="middle">菈妮策劃．黑刀刺客</text>
+  <text class="s" x="360" y="1155" text-anchor="middle">持命定之死碎片行兇</text>
+  </g>
+  <line class="ln" x1="360" y1="1168" x2="360" y2="1186" marker-end="url(#ar2)"/>
+  <g>
+  <rect class="box" x="60" y="1192" width="600" height="88"/>
+  <text class="t" x="360" y="1226" text-anchor="middle">葛德溫之死</text>
+  <text class="s" x="360" y="1249" text-anchor="middle">靈魂死而肉體不死</text>
+  <text class="s" x="360" y="1267" text-anchor="middle">成為死王子的源頭</text>
+  </g>
+  <line class="ln" x1="360" y1="1280" x2="360" y2="1298" marker-end="url(#ar2)"/>
+  <g>
+  <rect class="box" x="60" y="1304" width="600" height="88"/>
+  <text class="t" x="360" y="1338" text-anchor="middle">法環破碎</text>
+  <text class="s" x="360" y="1361" text-anchor="middle">瑪莉卡親手敲碎</text>
+  <text class="s" x="360" y="1379" text-anchor="middle">拉達岡修補失敗</text>
+  </g>
+  <line class="ln" x1="360" y1="1392" x2="360" y2="1410" marker-end="url(#ar2)"/>
+  <g>
+  <rect class="box" x="60" y="1416" width="600" height="88"/>
+  <text class="t" x="360" y="1450" text-anchor="middle">破碎戰爭</text>
+  <text class="s" x="360" y="1473" text-anchor="middle">半神搶奪大盧恩</text>
+  <text class="s" x="360" y="1491" text-anchor="middle">沒有人勝出</text>
+  </g>
+  <line class="ln" x1="360" y1="1504" x2="360" y2="1522" marker-end="url(#ar2)"/>
+  <g>
+  <rect class="box" x="60" y="1528" width="600" height="88"/>
+  <text class="t" x="360" y="1562" text-anchor="middle">褪色者召回</text>
+  <text class="s" x="360" y="1585" text-anchor="middle">恩惠指引放逐者</text>
+  <text class="s" x="360" y="1603" text-anchor="middle">回到交界地</text>
+  </g>
+  <text x="30" y="1664" font-size="16" font-weight="700" fill="#A87C2A">褪色者的旅程（主線）</text>
+  <g class="person" data-pid="melina">
+  <rect class="box" x="60" y="1680" width="600" height="88"/>
+  <text class="t" x="360" y="1714" text-anchor="middle">梅琳娜引路</text>
+  <text class="s" x="360" y="1737" text-anchor="middle">賜福旁的少女</text>
+  <text class="s" x="360" y="1755" text-anchor="middle">與褪色者立約</text>
+  </g>
+  <line class="ln" x1="360" y1="1768" x2="360" y2="1786" marker-end="url(#ar2)"/>
+  <g>
+  <rect class="box" x="60" y="1792" width="600" height="88"/>
+  <text class="t" x="360" y="1826" text-anchor="middle">收集大盧恩</text>
+  <text class="s" x="360" y="1849" text-anchor="middle">打倒碎片君王</text>
+  <text class="s" x="360" y="1867" text-anchor="middle">進入王城</text>
+  </g>
+  <line class="ln" x1="360" y1="1880" x2="360" y2="1898" marker-end="url(#ar2)"/>
+  <g>
+  <rect class="box" x="60" y="1904" width="600" height="88"/>
+  <text class="t" x="360" y="1938" text-anchor="middle">燒掉黃金樹</text>
+  <text class="s" x="360" y="1961" text-anchor="middle">樹門荊棘拒人進入</text>
+  <text class="s" x="360" y="1979" text-anchor="middle">梅琳娜自焚引火</text>
+  </g>
+  <line class="ln" x1="360" y1="1992" x2="360" y2="2010" marker-end="url(#ar2)"/>
+  <g>
+  <rect class="box" x="60" y="2016" width="600" height="88"/>
+  <text class="t" x="360" y="2050" text-anchor="middle">取回命定之死</text>
+  <text class="s" x="360" y="2073" text-anchor="middle">法姆亞茲拉</text>
+  <text class="s" x="360" y="2091" text-anchor="middle">殺黑劍瑪利喀斯</text>
+  </g>
+  <line class="ln" x1="360" y1="2104" x2="360" y2="2122" marker-end="url(#ar2)"/>
+  <g>
+  <rect class="box" x="60" y="2128" width="600" height="88"/>
+  <text class="t" x="360" y="2162" text-anchor="middle">王座決戰</text>
+  <text class="s" x="360" y="2185" text-anchor="middle">拉達岡與艾爾登之獸</text>
+  <text class="s" x="360" y="2203" text-anchor="middle">修復法環．新王誕生</text>
+  </g>
+  <g>
+  <rect class="note" x="60" y="2264" width="600" height="86"/>
+  <text class="t" x="86" y="2298">命定之死</text>
+  <text class="s" x="86" y="2320">本是法環的一部分．瑪莉卡將它摘出，交瑪利喀斯保管</text>
+  <text class="s" x="86" y="2338">被偷走的碎片，造出了黑刀</text>
+  </g>
+  <g class="person" data-pid="dung">
+  <rect class="note" x="60" y="2366" width="600" height="86"/>
+  <text class="t" x="86" y="2400">食糞者</text>
+  <text class="s" x="86" y="2422">囚於王城下水道牢籠．以詛咒汙染死者</text>
+  <text class="s" x="86" y="2440">他的修復符文通向詛咒結局</text>
+  </g>
+  <g>
+  <rect class="note" x="60" y="2468" width="600" height="86"/>
+  <text class="t" x="86" y="2502">星星時代（菈妮結局）</text>
+  <text class="s" x="86" y="2524">不修法環．菈妮把秩序帶離這個世界</text>
+  <text class="s" x="86" y="2542">褪色者隨她離開．秩序不再干涉地面</text>
+  </g>
+  <text class="cap" x="30" y="2600">金框：神與法環　實線：血緣與婚姻　紅字：謀殺與策劃</text>
+  <text class="cap" x="30" y="2628">依遊戲本篇設定整理．推論部分未列入</text>
+  </svg>
+    </div>
+  </div>
+  <div id="card" aria-hidden="true">
+    <div id="cardHead">
+      <button id="cardToggle">收合</button>
+      <button id="cardClose" title="關閉">✕</button>
+      <div id="cardName"></div>
+      <div id="cardEn"></div>
+    </div>
+    <div id="cardBranch"></div>
+    <p id="cardText"></p>
+    <div id="cardRelLabel">關係人（點了直接跳過去）</div>
+    <div id="cardRel"></div>
+  </div>
 </div>
-
-<div id="card" aria-hidden="true">
-  <button id="cardClose" title="關閉">✕</button>
-  <div id="cardName"></div>
-  <div id="cardEn"></div>
-  <div id="cardBranch"></div>
-  <p id="cardText"></p>
-  <div id="cardRelLabel">關係人（點了直接跳過去）</div>
-  <div id="cardRel"></div>
 </div>
 
 <script>
-const INFO = {"greaterwill": {"name": "無上意志", "en": "Greater Will", "branch": "秩序層", "text": "把艾爾登之獸與法環送進交界地的外神，早已失聯，只剩雙指自稱還在代行它的意志。", "rel": ["eldenbeast", "marika"]}, "eldenbeast": {"name": "艾爾登之獸", "en": "Elden Beast", "branch": "秩序層．法環本體", "text": "乘流星而來，最後成為法環本身，棲在瑪莉卡體內。王座決戰的最後一戰，對手就是它。", "rel": ["greaterwill", "marika"]}, "godfrey": {"name": "葛孚雷", "en": "Godfrey", "branch": "黃金一族源頭", "text": "瑪莉卡的第一任丈夫、首任艾爾登之王，黃金一族的源頭。功成之後被放逐出交界地，成為第一個褪色者。", "rel": ["marika", "godwyn", "morgott", "mohg"]}, "marika": {"name": "瑪莉卡 ＝ 拉達岡", "en": "Marika / Radagon", "branch": "中心．女王與第二任王", "text": "同一個人，女王與第二任王，法環棲於其身。跟葛孚雷生下黃金一族、跟蕾娜菈生下卡利亞三名子女、跟自己生下雙胞胎；最後親手敲碎法環。", "rel": ["greaterwill", "eldenbeast", "godfrey", "rennala", "godwyn", "morgott", "mohg", "malenia", "miquella", "radahn", "rykard", "ranni", "melina"]}, "rennala": {"name": "蕾娜菈", "en": "Rennala", "branch": "卡利亞王室", "text": "滿月女王，魔法學院與卡利亞的主人。拉達岡離開她去當第二任王之後精神崩潰，抱著琥珀卵，停在被離開的那一刻。", "rel": ["marika", "radahn", "rykard", "ranni"]}, "godwyn": {"name": "葛德溫", "en": "Godwyn", "branch": "瑪莉卡跟葛孚雷一支．長子", "text": "黃金時代最被愛戴的王子，打完古龍戰爭還能跟龍結為朋友。黑刀之夜第一個被殺，只死靈魂、肉體不死，屍體沉在地底蔓延成死根。", "rel": ["godfrey", "marika", "morgott", "mohg", "ranni"]}, "morgott": {"name": "蒙葛特", "en": "Morgott", "branch": "瑪莉卡跟葛孚雷一支．惡兆雙子之兄", "text": "生來帶惡兆，在律法眼中是不潔，卻是全家最忠於律法的人。守在王座前面打每一個想進城的褪色者，他守的秩序從頭到尾沒有回應過他。", "rel": ["godfrey", "marika", "godwyn", "mohg"]}, "mohg": {"name": "蒙格", "en": "Mohg", "branch": "瑪莉卡跟葛孚雷一支．惡兆雙子之弟", "text": "選擇跟哥哥相反：他在地底接受外神無形之母，以血建立莫格溫王朝，要迎米凱拉為神、自己當君主。DLC 定性他受米凱拉魅惑，被利用的成分分不清。", "rel": ["godfrey", "marika", "morgott", "miquella"]}, "malenia": {"name": "瑪蓮妮雅", "en": "Malenia", "branch": "瑪莉卡跟拉達岡一支．雙胞胎之妹", "text": "出生帶猩紅腐敗，一生抵抗借住在她體內的外神。她自稱是米凱拉的劍，為哥哥守聖樹、等他回來；南下跟拉塔恩決戰時放開腐敗、開了花。", "rel": ["marika", "miquella", "radahn"]}, "miquella": {"name": "米凱拉", "en": "Miquella", "branch": "瑪莉卡跟拉達岡一支．雙胞胎之兄", "text": "出生帶永遠停在孩童的詛咒。黃金律法救不了兄妹倆，他離開律法，種聖樹收容被拋棄的人、做無垢金擋外神，最後消失在繭裡；成神的完整計畫由 DLC 補完。", "rel": ["marika", "malenia", "mohg", "radahn"]}, "radahn": {"name": "拉塔恩", "en": "Radahn", "branch": "拉達岡跟蕾娜菈一支．次子", "text": "崇拜葛孚雷與父親的將軍，為了繼續騎從小養大的瘦弱愛馬，去學了重力魔法。碎星一戰凍住群星，也凍住菈妮的命運；被瑪蓮妮雅的腐敗吃掉神智後，祭典是部下替他辦的送行。", "rel": ["rennala", "marika", "rykard", "ranni", "malenia", "miquella"]}, "rykard": {"name": "拉卡德", "en": "Rykard", "branch": "拉達岡跟蕾娜菈一支．長子", "text": "火山官邸之主，全家最極端的反叛者：自願被大蛇艾格雷吞食，要養出一條能吞食諸神的大蛇，自己在蛇的體內不死。", "rel": ["rennala", "marika", "radahn", "ranni"]}, "ranni": {"name": "菈妮", "en": "Ranni", "branch": "拉達岡跟蕾娜菈一支．小女兒", "text": "神人。她拒絕命運被雙指安排，策劃黑刀之夜，殺掉自己的肉身、把靈魂搬進人偶；要弒掉自己的雙指，帶著她的律法遠離地面。", "rel": ["rennala", "marika", "radahn", "rykard", "godwyn"]}, "melina": {"name": "梅琳娜", "en": "Melina", "branch": "未歸戶", "text": "在賜福旁跟褪色者立約的少女，替他引路、把盧恩換成力量，最後在巨人火爐自焚引火。她是瑪莉卡的女兒，父親文本未定，這張圖沒有替她畫線。", "rel": ["marika"]}, "dung": {"name": "食糞者", "en": "Dung Eater", "branch": "結局人物", "text": "囚於王城下水道牢籠的褪色者，以咒縛種子汙染死者，讓詛咒一代一代傳下去。他的修復符文通向絕望結局。", "rel": []}};
-const svg = document.getElementById('chart');
+const INFO = {"greaterwill": {"name": "無上意志", "en": "Greater Will", "branch": "秩序層", "text": "把艾爾登之獸與法環送進交界地的外神，早已失聯，只剩雙指自稱還在代行它的意志。", "rel": ["eldenbeast", "marika"]}, "eldenbeast": {"name": "艾爾登之獸", "en": "Elden Beast", "branch": "秩序層．法環本體", "text": "乘流星而來，最後成為法環本身，棲在瑪莉卡體內。王座決戰的最後一戰，對手就是它。", "rel": ["greaterwill", "marika"]}, "godfrey": {"name": "葛孚雷", "en": "Godfrey", "branch": "黃金一族源頭", "text": "瑪莉卡的第一任丈夫、首任艾爾登之王，黃金一族的源頭。功成之後被放逐出交界地，成為第一個褪色者。", "rel": ["marika", "godwyn", "morgott", "mohg"]}, "marika": {"name": "瑪莉卡 ＝ 拉達岡", "en": "Marika / Radagon", "branch": "中心．女王與第二任王", "text": "同一個人，女王與第二任王，法環棲於其身。跟葛孚雷生下黃金一族、跟蕾娜菈生下卡利亞三名子女、跟自己生下雙胞胎；最後親手敲碎法環。", "rel": ["greaterwill", "eldenbeast", "godfrey", "rennala", "godwyn", "morgott", "mohg", "malenia", "miquella", "radahn", "rykard", "ranni", "melina"]}, "rennala": {"name": "蕾娜菈", "en": "Rennala", "branch": "卡利亞王室", "text": "滿月女王，魔法學院與卡利亞的主人。拉達岡離開她去當第二任王之後精神崩潰，抱著琥珀卵，停在被離開的那一刻。", "rel": ["marika", "radahn", "rykard", "ranni"]}, "godwyn": {"name": "葛德溫", "en": "Godwyn", "branch": "瑪莉卡跟葛孚雷一支．長子", "text": "黃金時代最被愛戴的王子，打完古龍戰爭還能跟龍結為朋友。黑刀之夜第一個被殺，只死靈魂、肉體不死，屍體沉在地底蔓延成死根。", "rel": ["godfrey", "marika", "morgott", "mohg", "ranni"]}, "morgott": {"name": "蒙葛特", "en": "Morgott", "branch": "瑪莉卡跟葛孚雷一支．惡兆雙子之兄", "text": "生來帶惡兆，在律法眼中是不潔，卻是全家最忠於律法的人。守在王座前面打每一個想進城的褪色者，他守的秩序從頭到尾沒有回應過他。", "rel": ["godfrey", "marika", "godwyn", "mohg"]}, "mohg": {"name": "蒙格", "en": "Mohg", "branch": "瑪莉卡跟葛孚雷一支．惡兆雙子之弟", "text": "選擇跟哥哥相反：他在地底接受外神無形之母，以血建立莫格溫王朝，要迎米凱拉為神、自己當君主。DLC 定性他受米凱拉魅惑，被利用的成分分不清。", "rel": ["godfrey", "marika", "morgott", "miquella"]}, "malenia": {"name": "瑪蓮妮亞", "en": "Malenia", "branch": "瑪莉卡跟拉達岡一支．雙胞胎之妹", "text": "出生帶猩紅腐敗，一生抵抗借住在她體內的外神。她自稱是米凱拉的劍，為哥哥守聖樹、等他回來；南下跟拉塔恩決戰時放開腐敗、開了花。", "rel": ["marika", "miquella", "radahn"]}, "miquella": {"name": "米凱拉", "en": "Miquella", "branch": "瑪莉卡跟拉達岡一支．雙胞胎之兄", "text": "出生帶永遠停在孩童的詛咒。黃金律法救不了兄妹倆，他離開律法，種聖樹收容被拋棄的人、做無垢金擋外神，最後消失在繭裡；成神的完整計畫由 DLC 補完。", "rel": ["marika", "malenia", "mohg", "radahn"]}, "radahn": {"name": "拉塔恩", "en": "Radahn", "branch": "拉達岡跟蕾娜菈一支．次子", "text": "崇拜葛孚雷與父親的將軍，為了繼續騎從小養大的瘦弱愛馬，去學了重力魔法。碎星一戰凍住群星，也凍住菈妮的命運；被瑪蓮妮亞的腐敗吃掉神智後，祭典是部下替他辦的送行。", "rel": ["rennala", "marika", "rykard", "ranni", "malenia", "miquella"]}, "rykard": {"name": "拉卡德", "en": "Rykard", "branch": "拉達岡跟蕾娜菈一支．長子", "text": "火山官邸之主，全家最極端的反叛者：自願被大蛇艾格雷吞食，要養出一條能吞食諸神的大蛇，自己在蛇的體內不死。", "rel": ["rennala", "marika", "radahn", "ranni"]}, "ranni": {"name": "菈妮", "en": "Ranni", "branch": "拉達岡跟蕾娜菈一支．小女兒", "text": "神人。她拒絕命運被雙指安排，策劃黑刀之夜，殺掉自己的肉身、把靈魂搬進人偶；要弒掉自己的雙指，帶著她的律法遠離地面。", "rel": ["rennala", "marika", "radahn", "rykard", "godwyn"]}, "melina": {"name": "梅琳娜", "en": "Melina", "branch": "未歸戶", "text": "在賜福旁跟褪色者立約的少女，替他引路、把盧恩換成力量，最後在巨人火爐自焚引火。她是瑪莉卡的女兒，父親文本未定，這張圖沒有替她畫線。", "rel": ["marika"]}, "dung": {"name": "食糞者", "en": "Dung Eater", "branch": "結局人物", "text": "囚於王城下水道牢籠的褪色者，以咒縛種子汙染死者，讓詛咒一代一代傳下去。他的修復符文通向絕望結局。", "rel": []}};
 const card = document.getElementById('card');
 function el(id){ return document.getElementById(id); }
+function groups(pid){ return document.querySelectorAll('[data-pid="' + pid + '"]'); }
 function reset(){
   document.querySelectorAll('.person').forEach(g=>g.classList.remove('rel','sel'));
-  card.classList.remove('show'); card.setAttribute('aria-hidden','true');
+  card.classList.remove('show','mini'); card.setAttribute('aria-hidden','true');
+  el('cardToggle').textContent = '收合';
 }
-function select(id){
-  const info = INFO[id]; if(!info) return;
-  reset();
-  const self = el('p-'+id);
-  self.classList.add('sel'); svg.appendChild(self);
-  info.rel.forEach(r=>{
-    const g = el('p-'+r);
-    if(g){ g.classList.add('rel'); svg.appendChild(g); }
-  });
+function select(pid){
+  const info = INFO[pid]; if(!info) return;
+  document.querySelectorAll('.person').forEach(g=>g.classList.remove('rel','sel'));
+  card.classList.remove('mini'); el('cardToggle').textContent = '收合';
+  groups(pid).forEach(g=>{ g.classList.add('sel'); g.parentNode.appendChild(g); });
+  info.rel.forEach(r=>{ groups(r).forEach(g=>{ g.classList.add('rel'); g.parentNode.appendChild(g); }); });
   el('cardName').textContent = info.name;
   el('cardEn').textContent = info.en;
   el('cardBranch').textContent = info.branch;
@@ -266,12 +472,25 @@ function select(id){
     relBox.appendChild(b);
   });
   card.classList.add('show'); card.setAttribute('aria-hidden','false');
+  if (window.innerWidth <= 860) {
+    const narrow = document.getElementById('svgNarrow');
+    const g = narrow.querySelector('[data-pid="' + pid + '"]');
+    if (g) {
+      const rect = g.getBoundingClientRect();
+      window.scrollTo({ top: window.scrollY + rect.top - 64, behavior: 'smooth' });
+    }
+  }
 }
 document.querySelectorAll('.person').forEach(g=>{
-  g.addEventListener('click', e=>{ e.stopPropagation(); select(g.id.slice(2)); });
+  g.addEventListener('click', e=>{ e.stopPropagation(); select(g.dataset.pid); });
 });
-svg.addEventListener('click', reset);
+document.querySelectorAll('svg').forEach(s=>s.addEventListener('click', reset));
 el('cardClose').addEventListener('click', reset);
+el('cardToggle').addEventListener('click', ()=>{
+  const mini = card.classList.toggle('mini');
+  el('cardToggle').textContent = mini ? '展開' : '收合';
+});
 </script>
+
 </body>
 </html>
